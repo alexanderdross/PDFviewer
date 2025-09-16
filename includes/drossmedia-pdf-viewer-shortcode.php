@@ -33,7 +33,7 @@ function drossmedia_pdf_viewer_shortcode($atts) {
 
     // Check if the URL exists in the decoded data
     if (empty($pdf_data['url'])) {
-        return '<p>' . __('No PDF available for this viewer.', 'PDF-Embed-and-SEO-Optimize') . '</p>';
+        return '<p>' . __('No PDF available for this viewer.', 'pdf-embed-seo-optimize') . '</p>';
     }
 
     // Path to the official PDF.js "viewer.html" in your plugin
@@ -161,6 +161,33 @@ $schema_data = array(
         $updated_viewer_html = $head_content . $viewer_html;
     }
 
+    $allowed_html = array(
+        'html' => array('lang' => array()),
+        'head' => array(),
+        'meta' => array('name' => array(), 'content' => array(), 'charset' => array(), 'http-equiv' => array()),
+        'title' => array(),
+        'link' => array('rel' => array(), 'href' => array(), 'type' => array()),
+        'script' => array('src' => array(), 'type' => array()),
+        'style' => array('type' => array()),
+        'body' => array('class' => array(), 'id' => array()),
+        'div' => array('class' => array(), 'id' => array(), 'style' => array(), 'data-*' => array()),
+        'span' => array('class' => array(), 'id' => array()),
+        'button' => array('class' => array(), 'id' => array(), 'type' => array(), 'title' => array()),
+        'input' => array('type' => array(), 'class' => array(), 'id' => array(), 'value' => array()),
+        'canvas' => array('class' => array(), 'id' => array()),
+        'iframe' => array('src' => array(), 'width' => array(), 'height' => array(), 'style' => array()),
+        'img' => array('src' => array(), 'alt' => array(), 'class' => array()),
+        'a' => array('href' => array(), 'class' => array(), 'target' => array()),
+        'p' => array('class' => array()),
+        'h1' => array('class' => array()),
+        'h2' => array('class' => array()),
+        'h3' => array('class' => array()),
+        'ul' => array('class' => array()),
+        'li' => array('class' => array()),
+        'select' => array('class' => array(), 'id' => array()),
+        'option' => array('value' => array(), 'selected' => array()),
+    );
+
     // 3) Create a container div for the viewer
     ob_start();
     ?>
@@ -172,7 +199,9 @@ $schema_data = array(
         data-pdf-title="<?php echo esc_attr($pdf_title); ?>"
         data-post-title="<?php echo esc_attr($post_title); ?>"
     >
-        <?php echo $updated_viewer_html; ?>
+        <?php 
+        echo wp_kses($updated_viewer_html, $allowed_html); 
+        ?>
     </div>
     <?php
 
